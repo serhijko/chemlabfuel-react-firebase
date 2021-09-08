@@ -1,9 +1,9 @@
 import React from 'react';
 
-const PasswordForgetPage = () => (
+const PasswordForget = () => (
   <div>
     <h1>Password Forget Page</h1>
   </div>
 );
 
-export default PasswordForgetPage;
+export default PasswordForget;
