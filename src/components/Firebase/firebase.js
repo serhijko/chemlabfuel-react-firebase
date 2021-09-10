@@ -1,5 +1,5 @@
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
+import { initializeApp } from '@firebase/app';
+import { getAuth } from '@firebase/auth';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -10,27 +10,8 @@ const firebaseConfig = {
   messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
 };
 
-class Firebase {
-  constructor() {
-    firebase.initializeApp(firebaseConfig);
+const firebaseApp = initializeApp(firebaseConfig);
 
-    this.auth = firebase.auth();
-  }
+export const auth = getAuth(firebaseApp);
 
-  // *** Auth API ***
-
-  doSignUp = (email, password) =>
-    this.auth.createUserWithEmailAndPassword(email, password);
-
-  doSignIn = (email, password) =>
-    this.auth.signInWithEmailAndPassword(email, password);
-
-  doSignOut = () => this.auth.signOut();
-
-  doPasswordReset = email => this.auth.sendPasswordResetEmail(email);
-
-  doPasswordUpdate = password =>
-    this.auth.currentUser.updatePassword(password);
-}
-
-export default Firebase;
+export default firebaseApp;
