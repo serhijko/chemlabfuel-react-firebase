@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 
 import { SignUpLink } from '../SignUp';
+import { PasswordForgetLink } from '../PasswordForget';
 import { auth } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
 import useFormInput from '../../handlers/useFormInput';
@@ -11,6 +12,7 @@ const SignInPage = () => (
   <div>
     <h1>Sign In</h1>
     <SignInForm />
+    <PasswordForgetLink />
     <SignUpLink />
   </div>
 );
