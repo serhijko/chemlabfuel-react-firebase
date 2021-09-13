@@ -3,9 +3,10 @@ import { Link, withRouter } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { set } from 'firebase/database';
 
-import { auth, dbUser } from '../Firebase';
-import * as ROUTES from '../../constants/routes';
+import * as firebase from '../Firebase';
 import useFormInput from '../../handlers/useFormInput';
+import * as ROUTES from '../../constants/routes';
+import * as ROLES from '../../constants/roles';
 
 const INITIAL_STATE = {
   firstName: '',
@@ -13,6 +14,7 @@ const INITIAL_STATE = {
   email: '',
   passwordOne: '',
   passwordTwo: '',
+  isAdmin: false,
   error: null,
 };
 
@@ -22,15 +24,23 @@ const SignUpFormBase = props => {
   const [email, setEmail] = useState(INITIAL_STATE.email);
   const [passwordOne, setPasswordOne] = useState(INITIAL_STATE.passwordOne);
   const [passwordTwo, setPasswordTwo] = useState(INITIAL_STATE.passwordTwo);
+  const [isAdmin, setIsAdmin] = useState(INITIAL_STATE.isAdmin);
   const [error, setError] = useState(INITIAL_STATE.error);
 
   const onSubmit = event => {
+    const roles = [];
+
+    if (isAdmin) {
+      roles.push(ROLES.ADMIN);
+    }
+
     (async () => {
       try {
-        const authUser = await createUserWithEmailAndPassword(auth, email, passwordOne);
-        const signUp = await set(dbUser(authUser.user.uid), {
+        const authUser = await createUserWithEmailAndPassword(firebase.auth, email, passwordOne);
+        const signUp = await set(firebase.user(authUser.user.uid), {
           username: { firstName, lastName },
           email,
+          roles,
         });
         setFirstName(INITIAL_STATE.firstName);
         setLastName(INITIAL_STATE.lastName);
@@ -46,6 +56,10 @@ const SignUpFormBase = props => {
     })();
 
     event.preventDefault();
+  };
+
+  const onChangeCheckbox = event => {
+    setIsAdmin(event.target.checked);
   };
 
   const isInvalid =
@@ -81,6 +95,15 @@ const SignUpFormBase = props => {
         type="password"
         placeholder="Confirm Password"
       />
+      <label>
+        Admin:
+        <input
+          name="isAdmin"
+          type="checkbox"
+          checked={isAdmin}
+          onChange={onChangeCheckbox}
+        />
+      </label>
       <button disabled={isInvalid} type="submit">
         Sign Up
       </button>

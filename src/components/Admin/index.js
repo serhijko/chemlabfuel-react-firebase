@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { onValue } from 'firebase/database';
-import { dbUsers } from '../Firebase';
+
+import * as firebase from '../Firebase';
+import { withAuthorization } from '../Session';
+import * as ROLES from '../../constants/roles';
 
 const AdminPage = () => {
   const [loading, setLoading] = useState(false);
@@ -9,14 +12,14 @@ const AdminPage = () => {
   useEffect(() => {
     setLoading(true);
 
-    return onValue(dbUsers(), snapshot => {
+    return onValue(firebase.users(), snapshot => {
       const usersObject = snapshot.val();
-      console.log(usersObject);
+
       const usersList = Object.keys(usersObject).map(key => ({
         ...usersObject[key],
         uid: key,
       }));
-      console.log(usersList);
+
       setUsers(usersList);
       setLoading(false);
     }, {
@@ -27,6 +30,9 @@ const AdminPage = () => {
   return (
     <div>
       <h1>Admin Page</h1>
+      <p>
+        The Admin Page is accessible by every signed in admin user.
+      </p>
 
       {loading && <div>Loading ...</div>}
 
@@ -53,4 +59,7 @@ const UserList = ({ users }) => (
   </ul>
 );
 
-export default AdminPage;
+const condition = authUser =>
+  authUser && authUser.roles.includes(ROLES.ADMIN);
+
+export default withAuthorization(condition)(AdminPage);

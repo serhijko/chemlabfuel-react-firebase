@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
 
 // import { AuthUserContext } from '.';
 import AuthUserContext from './context';
-import { auth } from '../Firebase';
+import { onAuthUserListener } from '../Firebase';
 
 const withAuthentication = Component => {
   return props => {
     const [authUser, setAuthUser] = useState(null);
 
     useEffect(() => {
-      const listener = onAuthStateChanged(
-        auth,
+      const listener = onAuthUserListener(
         authUser => {
-          authUser
-            ? setAuthUser(authUser)
-            : setAuthUser(null);
+          setAuthUser(authUser)
+        },
+        () => {
+          setAuthUser(null);
         },
       );
       return () => listener();

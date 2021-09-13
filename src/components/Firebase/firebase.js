@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { getDatabase, ref } from 'firebase/database';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getDatabase, onValue, ref } from 'firebase/database';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -18,8 +18,38 @@ export const db = getDatabase(firebaseApp);
 
 // *** User API ***
 
-export const dbUser = uid => ref(db, `users/${uid}`);
+export const user = uid => ref(db, `users/${uid}`);
 
-export const dbUsers = () => ref(db, 'users');
+export const users = () => ref(db, 'users');
 
-export default firebaseApp;
+// *** Merge Auth and DB User API *** //
+
+export const onAuthUserListener = (next, fallback) =>
+  onAuthStateChanged(
+    auth,
+    authUser => {
+      if (authUser) {
+        onValue(user(authUser.uid), snapshot => {
+          const dbUser = snapshot.val();
+
+          // default empty roles
+          if (!dbUser.roles) {
+            dbUser.roles = [];
+          }
+
+          // merge auth and db user
+          authUser = {
+            uid: authUser.uid,
+            email: authUser.email,
+            ...dbUser,
+          };
+
+          next(authUser);
+        }, {
+          onlyOnce: true
+        });
+      } else {
+        fallback();
+      }
+    },
+  );
