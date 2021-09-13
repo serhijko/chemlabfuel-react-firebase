@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { set } from 'firebase/database';
 
-import { auth } from '../Firebase';
+import { auth, dbUser } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
 import useFormInput from '../../handlers/useFormInput';
 
 const INITIAL_STATE = {
-  username: '',
+  firstName: '',
+  lastName: '',
   email: '',
   passwordOne: '',
   passwordTwo: '',
@@ -15,7 +17,8 @@ const INITIAL_STATE = {
 };
 
 const SignUpFormBase = props => {
-  const [username, setUsername] = useState(INITIAL_STATE.username);
+  const [firstName, setFirstName] = useState(INITIAL_STATE.firstName);
+  const [lastName, setLastName] = useState(INITIAL_STATE.lastName);
   const [email, setEmail] = useState(INITIAL_STATE.email);
   const [passwordOne, setPasswordOne] = useState(INITIAL_STATE.passwordOne);
   const [passwordTwo, setPasswordTwo] = useState(INITIAL_STATE.passwordTwo);
@@ -24,8 +27,13 @@ const SignUpFormBase = props => {
   const onSubmit = event => {
     (async () => {
       try {
-        const signUp = await createUserWithEmailAndPassword(auth, email, passwordOne);
-        setUsername(INITIAL_STATE.username);
+        const authUser = await createUserWithEmailAndPassword(auth, email, passwordOne);
+        const signUp = await set(dbUser(authUser.user.uid), {
+          username: { firstName, lastName },
+          email,
+        });
+        setFirstName(INITIAL_STATE.firstName);
+        setLastName(INITIAL_STATE.lastName);
         setEmail(INITIAL_STATE.email);
         setPasswordOne(INITIAL_STATE.passwordOne);
         setPasswordTwo(INITIAL_STATE.passwordTwo);
@@ -44,14 +52,19 @@ const SignUpFormBase = props => {
     passwordOne !== passwordTwo ||
     passwordOne === '' ||
     email === '' ||
-    username === '';
+    firstName === '' || lastName === '';
 
   return (
     <form onSubmit={onSubmit}>
       <input
-        {...useFormInput(username, setUsername)}
+        {...useFormInput(firstName, setFirstName)}
         type="text"
-        placeholder="Full Name"
+        placeholder="First Name"
+      />
+      <input
+        {...useFormInput(lastName, setLastName)}
+        type="text"
+        placeholder="Last Name"
       />
       <input
         {...useFormInput(email, setEmail)}
