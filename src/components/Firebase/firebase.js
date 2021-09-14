@@ -34,7 +34,7 @@ export const onAuthUserListener = (next, fallback) =>
 
           // default empty roles
           if (!dbUser.roles) {
-            dbUser.roles = [];
+            dbUser.roles = {};
           }
 
           // merge auth and db user

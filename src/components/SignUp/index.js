@@ -28,10 +28,10 @@ const SignUpFormBase = props => {
   const [error, setError] = useState(INITIAL_STATE.error);
 
   const onSubmit = event => {
-    const roles = [];
+    const roles = {};
 
     if (isAdmin) {
-      roles.push(ROLES.ADMIN);
+      roles[ROLES.ADMIN] = ROLES.ADMIN;
     }
 
     (async () => {
