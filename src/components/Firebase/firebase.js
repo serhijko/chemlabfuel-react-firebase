@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, sendEmailVerification } from 'firebase/auth';
 import { getDatabase, onValue, ref } from 'firebase/database';
 
 const firebaseConfig = {
@@ -15,6 +15,13 @@ const firebaseApp = initializeApp(firebaseConfig);
 
 export const auth = getAuth(firebaseApp);
 export const db = getDatabase(firebaseApp);
+
+// *** Auth API ***
+
+export const doSendEmailVerification = () =>
+  sendEmailVerification(auth.currentUser, {
+    url: process.env.REACT_APP_CONFIRMATION_EMAIL_REDIRECT,
+  });
 
 // *** User API ***
 
@@ -41,6 +48,8 @@ export const onAuthUserListener = (next, fallback) =>
           authUser = {
             uid: authUser.uid,
             email: authUser.email,
+            emailVerified: authUser.emailVerified,
+            providerData: authUser.providerData,
             ...dbUser,
           };
 

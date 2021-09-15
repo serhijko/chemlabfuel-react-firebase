@@ -37,11 +37,13 @@ const SignUpFormBase = props => {
     (async () => {
       try {
         const authUser = await createUserWithEmailAndPassword(firebase.auth, email, passwordOne);
+        // Create a user in your Firebase realtime database
         const signUp = await set(firebase.user(authUser.user.uid), {
           username: { firstName, lastName },
           email,
           roles,
         });
+        await firebase.doSendEmailVerification();
         setFirstName(INITIAL_STATE.firstName);
         setLastName(INITIAL_STATE.lastName);
         setEmail(INITIAL_STATE.email);

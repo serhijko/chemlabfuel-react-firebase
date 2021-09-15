@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { onValue } from 'firebase/database';
+import { compose } from 'recompose';
 
 import * as firebase from '../Firebase';
-import { withAuthorization } from '../Session';
+import { withAuthorization, withEmailVerification } from '../Session';
 import * as ROLES from '../../constants/roles';
 
 const AdminPage = () => {
@@ -62,4 +63,7 @@ const UserList = ({ users }) => (
 const condition = authUser =>
   authUser && !!authUser.roles[ROLES.ADMIN];
 
-export default withAuthorization(condition)(AdminPage);
+export default compose(
+  withAuthorization(condition),
+  withEmailVerification,
+)(AdminPage);
