@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { onValue } from 'firebase/database';
+import { off, onValue } from 'firebase/database';
 import { sendPasswordResetEmail } from 'firebase/auth';
 
 import * as firebase from '../Firebase';
@@ -16,12 +16,14 @@ const UserItem = props => {
 
     setLoading(true);
 
-    return onValue(firebase.user(props.match.params.id), snapshot => {
+    onValue(firebase.user(props.match.params.id), snapshot => {
       setUser(snapshot.val());
       setLoading(false);
-    }, {
-      onlyOnce: true
     });
+
+    return () => {
+      off(firebase.user(props.match.params.id));
+    }
   }, [user, props.match.params.id]);
 
   const onSendPasswordResetEmail = () => {

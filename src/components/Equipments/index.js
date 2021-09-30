@@ -1,0 +1,46 @@
+import { remove } from 'firebase/database';
+
+import * as firebase from '../Firebase';
+import EquipmentList from './EquipmentList';
+
+const Equipments = ({
+  authUser,
+  editMode,
+  equipments,
+  loading,
+  onEditData06,
+  onEditData07,
+  onEditData09,
+  onEditData10,
+  onEditData12,
+  users,
+                    }) => {
+  const onRemoveEquipment = uid => {
+    remove(firebase.equipment(uid));
+  };
+
+  return (
+    <>
+      {loading && <tr><td colSpan="12">Загрузка ...</td></tr>}
+
+      {equipments ? (
+        <EquipmentList
+          authUser={authUser}
+          equipments={equipments}
+          editMode={editMode}
+          onEditData06={onEditData06}
+          onEditData07={onEditData07}
+          onEditData09={onEditData09}
+          onEditData10={onEditData10}
+          onEditData12={onEditData12}
+          onRemoveEquipment={onRemoveEquipment}
+          users={users}
+        />
+      ) : (
+        <tr><td colSpan="12">Нет ИО и СИ ...</td></tr>
+      )}
+    </>
+  );
+};
+
+export default Equipments;

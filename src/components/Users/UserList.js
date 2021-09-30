@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { onValue } from 'firebase/database';
+import { off, onValue } from 'firebase/database';
 import { Link } from 'react-router-dom';
 
 import * as firebase from '../Firebase';
@@ -12,7 +12,7 @@ const UserList = () => {
   useEffect(() => {
     setLoading(true);
 
-    return onValue(firebase.users(), snapshot => {
+    onValue(firebase.users(), snapshot => {
       const usersObject = snapshot.val();
 
       const usersList = Object.keys(usersObject).map(key => ({
@@ -22,9 +22,11 @@ const UserList = () => {
 
       setUsers(usersList);
       setLoading(false);
-    }, {
-      onlyOnce: true
     });
+
+    return () => {
+      off(firebase.users());
+    }
   }, []);
 
   return (

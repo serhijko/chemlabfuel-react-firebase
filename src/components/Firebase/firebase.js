@@ -13,6 +13,8 @@ const firebaseConfig = {
 
 const firebaseApp = initializeApp(firebaseConfig);
 
+/* Firebase APIs */
+
 export const auth = getAuth(firebaseApp);
 export const db = getDatabase(firebaseApp);
 
@@ -62,3 +64,9 @@ export const onAuthUserListener = (next, fallback) =>
       }
     },
   );
+
+// *** Equipment API ***
+
+export const equipment = uid => ref(db, `equipments/${uid}`);
+
+export const equipments = () => ref(db, 'equipments');
