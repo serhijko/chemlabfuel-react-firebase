@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { set } from 'firebase/database';
+import { compose } from 'recompose';
 
+import { withAuthorization } from '../Session';
 import * as firebase from '../Firebase';
 import useFormInput from '../../handlers/useFormInput';
 import * as ROUTES from '../../constants/routes';
@@ -18,7 +20,7 @@ const INITIAL_STATE = {
   error: null,
 };
 
-const SignUpFormBase = props => {
+const SignUpFormBase = () => {
   const [firstName, setFirstName] = useState(INITIAL_STATE.firstName);
   const [lastName, setLastName] = useState(INITIAL_STATE.lastName);
   const [email, setEmail] = useState(INITIAL_STATE.email);
@@ -44,13 +46,6 @@ const SignUpFormBase = props => {
           roles,
         });
         await firebase.doSendEmailVerification();
-        setFirstName(INITIAL_STATE.firstName);
-        setLastName(INITIAL_STATE.lastName);
-        setEmail(INITIAL_STATE.email);
-        setPasswordOne(INITIAL_STATE.passwordOne);
-        setPasswordTwo(INITIAL_STATE.passwordTwo);
-        setError(INITIAL_STATE.error);
-        props.history.push(ROUTES.HOME);
         return signUp;
       } catch (error) {
         setError(error);
@@ -124,11 +119,17 @@ const SignUpPage = () => (
 
 const SignUpLink = () => (
   <p>
-    Don't have an account? <Link to={ROUTES.SING_UP}>Sign Up</Link>
+    <Link to={ROUTES.SING_UP}>Sign Up a New User</Link>
   </p>
 );
 
-const SignUpForm = withRouter(SignUpFormBase);
+const condition = authUser =>
+  authUser && !!authUser.roles[ROLES.ADMIN];
+
+const SignUpForm = compose(
+  withRouter,
+  withAuthorization(condition),
+)(SignUpFormBase);
 
 export default SignUpPage;
 

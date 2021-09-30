@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 import * as firebase from '../Firebase';
 import * as ROUTES from '../../constants/routes';
+import { SignUpLink } from '../SignUp';
 
 const UserList = () => {
   const [loading, setLoading] = useState(false);
@@ -37,13 +38,13 @@ const UserList = () => {
         {users.map(user => (
           <li key={user.uid}>
             <span>
-              <strong>ID:</strong> {user.uid}
+              <strong>ID:</strong> {user.uid} {' '}
             </span>
             <span>
-              <strong>E-Mail:</strong> {user.email}
+              <strong>E-Mail:</strong> {user.email} {' '}
             </span>
             <span>
-              <strong>Username:</strong> {user.username.firstName + ' ' + user.username.lastName}
+              <strong>Username:</strong> {user.username.firstName + ' ' + user.username.lastName} {' '}
             </span>
             <span>
               <Link
@@ -58,6 +59,8 @@ const UserList = () => {
           </li>
         ))}
       </ul>
+
+      <SignUpLink />
     </div>
   );
 };
