@@ -64,6 +64,7 @@ class EquipmentItem extends Component {
       this.props.equipment,
       this.state.editData06,
       nextDate(this.state.editData06, this.state.editData07),
+      (new Date(nextDate(this.state.editData06, this.state.editData07))).getTime(),
       authUser,
     );
 
@@ -75,6 +76,7 @@ class EquipmentItem extends Component {
       this.props.equipment,
       this.state.editData07,
       nextDate(this.state.editData06, this.state.editData07),
+      (new Date(nextDate(this.state.editData06, this.state.editData07))).getTime(),
       authUser,
     );
 
@@ -82,13 +84,23 @@ class EquipmentItem extends Component {
   };
 
   onSaveEditData09 = (authUser) => {
-    this.props.onEditData09(this.props.equipment, this.state.editData09, authUser);
+    this.props.onEditData09(
+      this.props.equipment,
+      this.state.editData09,
+      (new Date(this.state.editData09)).setFullYear((new Date(this.state.editData09)).getFullYear() + 20),
+      authUser,
+    );
 
     this.setState({ editMode09: false });
   };
 
   onSaveEditData10 = (authUser) => {
-    this.props.onEditData10(this.props.equipment, this.state.editData10, authUser);
+    this.props.onEditData10(
+      this.props.equipment,
+      this.state.editData10,
+      (new Date(this.state.editData10)).getTime(),
+      authUser,
+    );
 
     this.setState({ editMode10: false });
   };
@@ -223,7 +235,8 @@ class EquipmentItem extends Component {
         </td>
         <td>
           {
-            equipment.user.username.lastName || equipment.user.createdBy
+            equipment.user.username.lastName + ' ' + equipment.user.username.firstName.slice(0, 1) + '.'
+            || equipment.user.createdBy
           }
           {editMode && (
             <button
@@ -257,9 +270,14 @@ class EquipmentItem extends Component {
             <button onClick={this.onToggleEditMode12}>Править</button>
           ))}
           {equipment.data12 && equipment.editedAt && ' '}
-          {equipment.editedAt && <span>
-            Изменено {toRussianDateFormat(equipment.editedAt)} {equipment.user.username.lastName || equipment.user.editedBy}
-          </span>}
+          {equipment.editedAt &&
+            <span>
+              Изменено {toRussianDateFormat(equipment.editedAt)} {
+                equipment.user.username.lastName + ' ' + equipment.user.username.firstName.slice(0, 1) + '.'
+                || equipment.user.editedBy
+              }
+            </span>
+          }
         </td>
       </tr>
     );

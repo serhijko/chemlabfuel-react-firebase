@@ -5,12 +5,13 @@ import SignOutButton from '../SignOut';
 import { AuthUserContext } from '../Session';
 import * as ROUTES from '../../constants/routes';
 import * as ROLES from '../../constants/roles';
+import './index.css';
 
 const Navigation = () => {
   const authUser = useContext(AuthUserContext);
 
   return (
-    <div>
+    <div className="Navigation">
       {
         authUser ? (
           <NavigationAuth authUser={authUser} />

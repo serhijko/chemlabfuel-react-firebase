@@ -1,0 +1,11 @@
+.Header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.Header-logo {
+  width: 80%;
+  pointer-events: none;
+}

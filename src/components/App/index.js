@@ -4,7 +4,7 @@ import {
   Route,
 } from 'react-router-dom';
 
-import Navigation from '../Navigation';
+import Header from '../Header';
 import LandingPage from '../Landing';
 import SignUpPage from '../SignUp';
 import SignInPage from '../SignIn';
@@ -13,6 +13,7 @@ import HomePage from '../Home';
 import AccountPage from '../Account';
 import AdminPage from '../Admin';
 import Journal_T12 from '../Journals/Journal_T12';
+import Footer from '../Footer';
 import './index.css';
 
 import * as ROUTES from '../../constants/routes';
@@ -20,8 +21,8 @@ import { withAuthentication } from '../Session';
 
 const App = () => (
   <Router>
-    <div>
-      <Navigation />
+    <div className="App">
+      <Header />
 
       <hr />
 
@@ -33,6 +34,10 @@ const App = () => (
       <Route path={ROUTES.ACCOUNT} component={AccountPage} />
       <Route path={ROUTES.ADMIN} component={AdminPage} />
       <Route path={ROUTES.JOURNAL_T12} component={Journal_T12} />
+
+      <hr />
+
+      <Footer />
     </div>
   </Router>
 );

@@ -12,6 +12,7 @@ import * as firebase from '../Firebase';
 import useFormInput from '../../handlers/useFormInput';
 import './Journal_T12.css';
 import nextDate from '../../handlers/nextCalibrationCalculation';
+import TableHead from '../Equipments/TableHead';
 
 const Journal_T12 = () => {
   const [data01, setData01] = useState(''); // number
@@ -21,16 +22,20 @@ const Journal_T12 = () => {
   const [data05, setData05] = useState(''); // release
   const [data06, setData06] = useState(''); // periodicity
   const [data07, setData07] = useState(''); // last calibration
-  const [, setData08] = useState(''); // next calibration
+  const [data08, setData08] = useState(''); // next calibration
   const [data09, setData09] = useState(''); // putting in storage
   const [data10, setData10] = useState(''); // removing from storage
+  const [data11, setData11] = useState('');
   const [data12, setData12] = useState(''); // notes
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [equipments, setEquipments] = useState([]);
   const [start, setStart] = useState(0);
   const [users, setUsers] = useState(null);
-  
+  const [length, setLength] = useState(0);
+
+  const authUser = useContext(AuthUserContext);
+
   const onListenForUsers = () => {
     onValue(firebase.users(), snapshot => {
       setUsers(snapshot.val());
@@ -51,8 +56,10 @@ const Journal_T12 = () => {
         }));
 
         setEquipments(equipmentsList);
+        setLength(equipmentsList.length);
       } else {
         setEquipments(null);
+        setLength(0);
       }
       setLoading(false);
     });
@@ -68,8 +75,6 @@ const Journal_T12 = () => {
     }
   }, [start]);
 
-  const authUser = useContext(AuthUserContext);
-
   const onCreateEquipment = (event, authUser) => {
     push(firebase.equipments(), {
       createdAt: serverTimestamp(),
@@ -81,9 +86,10 @@ const Journal_T12 = () => {
       data05,
       data06,
       data07,
-      data08: nextDate(data06, data07),
+      data08: setData08(nextDate(data06, data07)),
       data09,
       data10,
+      data11: setData11(data08.getTime()),
       data12,
     });
 
@@ -97,6 +103,7 @@ const Journal_T12 = () => {
     setData08('');
     setData09('');
     setData10('');
+    setData11(null);
     setData12('');
 
     event.preventDefault();
@@ -106,39 +113,43 @@ const Journal_T12 = () => {
     setEditMode(!editMode);
   }
 
-  const onEditData06 = (equipment, data06, data08, authUser) => {
+  const onEditData06 = (equipment, data06, data08, data11, authUser) => {
     set(firebase.equipment(equipment.uid), {
       ...equipment,
       data06,
       data08,
+      data11,
       editedAt: serverTimestamp(),
       editedBy: authUser.uid,
     });
   };
 
-  const onEditData07 = (equipment, data07, data08, authUser) => {
+  const onEditData07 = (equipment, data07, data08, data11, authUser) => {
     set(firebase.equipment(equipment.uid), {
       ...equipment,
       data07,
       data08,
+      data11,
       editedAt: serverTimestamp(),
       editedBy: authUser.uid,
     });
   };
 
-  const onEditData09 = (equipment, data09, authUser) => {
+  const onEditData09 = (equipment, data09, data11, authUser) => {
     set(firebase.equipment(equipment.uid), {
       ...equipment,
       data09,
+      data11,
       editedAt: serverTimestamp(),
       editedBy: authUser.uid,
     });
   };
 
-  const onEditData10 = (equipment, data10, authUser) => {
+  const onEditData10 = (equipment, data10, data11, authUser) => {
     set(firebase.equipment(equipment.uid), {
       ...equipment,
       data10,
+      data11,
       editedAt: serverTimestamp(),
       editedBy: authUser.uid,
     });
@@ -151,20 +162,12 @@ const Journal_T12 = () => {
     });
   };
 
-  const renderTableCols = () => {
-    let cols = [];
-    for (let i = 1; i <= 12; i++) {
-      cols.push(<th key={"col" + i}>{i}</th>);
-    }
-    return cols;
-  };
-
   const onPrevPage = () => {
-    setStart(start - 1);
+    setStart(start - 5);
   };
 
   const onNextPage = () => {
-    setStart(start + 1);
+    setStart(start + 5);
   };
 
   return (
@@ -182,32 +185,14 @@ const Journal_T12 = () => {
         )}
       </button></h2>
 
-      {!loading && equipments && (
+      {!loading && equipments && start > 0 && (
         <button type="button" onClick={onPrevPage}>
-          Предыдущие
+          {(start - 5) ? (start - 5) : 1} — {start}
         </button>
       )}
       <form onSubmit={event => onCreateEquipment(event, authUser)}>
         <table>
-          <thead>
-          <tr>
-            <th>№ п/п</th>
-            <th>Наименование оборудования (ИО, СИ)</th>
-            <th>Марка, тип</th>
-            <th>Заводской номер (инв. номер)</th>
-            <th>Год выпуска (ввод в эксплу-атацию)</th>
-            <th>Периодичность метролог. аттестации, поверки, калибровки, мес.</th>
-            <th>Дата последней аттестации, поверки, калибровки</th>
-            <th>Дата следующей аттестации, поверки, калибровки</th>
-            <th>Дата консервации</th>
-            <th>Дата расконсервации</th>
-            <th>Ответственный</th>
-            <th>Примечания</th>
-          </tr>
-          <tr>
-            {renderTableCols()}
-          </tr>
-          </thead>
+          <TableHead />
           <tbody>
           <Equipments
             authUser={authUser}
@@ -303,9 +288,9 @@ const Journal_T12 = () => {
           </tbody>
         </table>
       </form>
-      {!loading && equipments && (
+      {!loading && equipments && ((start === 0 && length === 5) || length === 6) && (
         <button type="button" onClick={onNextPage}>
-          Следующие
+          {start + 5} — {start + 10}
         </button>
       )}
     </div>
