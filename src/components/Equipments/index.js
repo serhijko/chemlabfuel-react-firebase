@@ -8,6 +8,7 @@ const Equipments = ({
   editMode,
   equipments,
   loading,
+  noEquipmentText,
   onEditData06,
   onEditData07,
   onEditData09,
@@ -37,7 +38,7 @@ const Equipments = ({
           users={users}
         />
       ) : (
-        <tr><td colSpan="12">Нет ИО и СИ ...</td></tr>
+        <tr><td colSpan="12">{noEquipmentText}</td></tr>
       )}
     </>
   );

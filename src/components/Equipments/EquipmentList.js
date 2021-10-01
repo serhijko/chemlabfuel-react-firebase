@@ -13,12 +13,7 @@ const EquipmentList = ({
                          users,
                        }) => (
   <>
-    {equipments.map(equipment => ({
-      ...equipment,
-      user: users
-        ? users[equipment.createdBy]
-        : { createdBy: equipment.createdBy }
-    })).map(equipment => (
+    {equipments.map(equipment => (
       <EquipmentItem
         key={equipment.uid}
         authUser={authUser}
@@ -30,6 +25,7 @@ const EquipmentList = ({
         onEditData09={onEditData09}
         onEditData10={onEditData10}
         onEditData12={onEditData12}
+        users={users}
       />
     ))}
   </>

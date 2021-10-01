@@ -6,7 +6,7 @@ import * as firebase from '../Firebase';
 import TableHead from './TableHead';
 import Equipments from './index';
 
-const EquipmentsToCalibrate = (props) => {
+const EquipmentsToCalibrate = () => {
   const [loading, setLoading] = useState(false);
   const [equipments, setEquipments] = useState([]);
   const [editMode, setEditMode] = useState(false);
@@ -120,6 +120,8 @@ const EquipmentsToCalibrate = (props) => {
           equipments={equipments}
           loading={loading}
           users={users}
+          noEquipmentText={`Нет ИО, требующих метрологической аттестации, \
+          и СИ, требующих поверки, калибровки в течение ближайших ${period} дней.`}
         />
         </tbody>
       </table>

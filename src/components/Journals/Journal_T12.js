@@ -13,6 +13,7 @@ import useFormInput from '../../handlers/useFormInput';
 import './Journal_T12.css';
 import nextDate from '../../handlers/nextCalibrationCalculation';
 import TableHead from '../Equipments/TableHead';
+import nextCalibrationTime from '../../handlers/nextCalibrationTime';
 
 const Journal_T12 = () => {
   const [data01, setData01] = useState(''); // number
@@ -22,7 +23,7 @@ const Journal_T12 = () => {
   const [data05, setData05] = useState(''); // release
   const [data06, setData06] = useState(''); // periodicity
   const [data07, setData07] = useState(''); // last calibration
-  const [data08, setData08] = useState(''); // next calibration
+  const [, setData08] = useState(''); // next calibration
   const [data09, setData09] = useState(''); // putting in storage
   const [data10, setData10] = useState(''); // removing from storage
   const [, setData11] = useState(''); // time of removing from storage or expiration of calibration
@@ -72,6 +73,7 @@ const Journal_T12 = () => {
   }, []);
 
   const onCreateEquipment = (event, authUser) => {
+    const nextCalibration = nextDate(data06, data07);
     push(firebase.equipments(), {
       createdAt: serverTimestamp(),
       createdBy: authUser.uid,
@@ -82,10 +84,10 @@ const Journal_T12 = () => {
       data05,
       data06,
       data07,
-      data08: setData08(nextDate(data06, data07)),
+      data08: nextCalibration,
       data09,
       data10,
-      data11: setData11(data08.getTime()),
+      data11: nextCalibrationTime(nextCalibration, data09, data10),
       data12,
     });
 
@@ -99,7 +101,7 @@ const Journal_T12 = () => {
     setData08('');
     setData09('');
     setData10('');
-    setData11(null);
+    setData11('');
     setData12('');
 
     event.preventDefault();
@@ -188,6 +190,7 @@ const Journal_T12 = () => {
             onEditData10={onEditData10}
             onEditData12={onEditData12}
             users={users}
+            noEquipmentText={"Нет ИО и СИ ..."}
           />
           </tbody>
 

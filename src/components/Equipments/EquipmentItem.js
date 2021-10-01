@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import nextDate from '../../handlers/nextCalibrationCalculation';
 import toRussianDateFormat from '../../handlers/toRussianDateFormat';
+import nextCalibrationTime from '../../handlers/nextCalibrationTime';
 
 class EquipmentItem extends Component {
   constructor(props) {
@@ -60,11 +61,14 @@ class EquipmentItem extends Component {
   };
 
   onSaveEditData06 = (authUser) => {
+    const nextCalibration = nextDate(this.state.editData06, this.props.equipment.data07);
+    const puttingInStorage = this.props.equipment.data09;
+    const removingFromStorage = this.props.equipment.data10;
     this.props.onEditData06(
       this.props.equipment,
       this.state.editData06,
-      nextDate(this.state.editData06, this.state.editData07),
-      (new Date(nextDate(this.state.editData06, this.state.editData07))).getTime(),
+      nextCalibration,
+      nextCalibrationTime(nextCalibration, puttingInStorage, removingFromStorage),
       authUser,
     );
 
@@ -72,11 +76,14 @@ class EquipmentItem extends Component {
   };
 
   onSaveEditData07 = (authUser) => {
+    const nextCalibration = nextDate(this.props.equipment.data06, this.state.editData07);
+    const puttingInStorage = this.props.equipment.data09;
+    const removingFromStorage = this.props.equipment.data10;
     this.props.onEditData07(
       this.props.equipment,
       this.state.editData07,
-      nextDate(this.state.editData06, this.state.editData07),
-      (new Date(nextDate(this.state.editData06, this.state.editData07))).getTime(),
+      nextCalibration,
+      nextCalibrationTime(nextCalibration, puttingInStorage, removingFromStorage),
       authUser,
     );
 
@@ -84,10 +91,13 @@ class EquipmentItem extends Component {
   };
 
   onSaveEditData09 = (authUser) => {
+    const nextCalibration = nextDate(this.props.equipment.data06, this.props.equipment.data07);
+    const puttingInStorage = this.state.editData09;
+    const removingFromStorage = this.props.equipment.data10;
     this.props.onEditData09(
       this.props.equipment,
       this.state.editData09,
-      (new Date(this.state.editData09)).setFullYear((new Date(this.state.editData09)).getFullYear() + 20),
+      nextCalibrationTime(nextCalibration, puttingInStorage, removingFromStorage),
       authUser,
     );
 
@@ -95,10 +105,13 @@ class EquipmentItem extends Component {
   };
 
   onSaveEditData10 = (authUser) => {
+    const nextCalibration = nextDate(this.props.equipment.data06, this.props.equipment.data07);
+    const puttingInStorage = this.props.equipment.data09;
+    const removingFromStorage = this.state.editData10;
     this.props.onEditData10(
       this.props.equipment,
       this.state.editData10,
-      (new Date(this.state.editData10)).getTime(),
+      nextCalibrationTime(nextCalibration, puttingInStorage, removingFromStorage),
       authUser,
     );
 
@@ -117,6 +130,7 @@ class EquipmentItem extends Component {
       editMode,
       equipment,
       onRemoveEquipment,
+      users,
     } = this.props;
 
     const {
@@ -235,8 +249,9 @@ class EquipmentItem extends Component {
         </td>
         <td>
           {
-            equipment.user.username.lastName + ' ' + equipment.user.username.firstName.slice(0, 1) + '.'
-            || equipment.user.createdBy
+            users[equipment.createdBy].username.lastName + ' ' +
+            users[equipment.createdBy].username.firstName.slice(0, 1) + '.'
+            || equipment.createdBy
           }
           {editMode && (
             <button
@@ -273,8 +288,9 @@ class EquipmentItem extends Component {
           {equipment.editedAt &&
             <span>
               Изменено {toRussianDateFormat(equipment.editedAt)} {
-                equipment.user.username.lastName + ' ' + equipment.user.username.firstName.slice(0, 1) + '.'
-                || equipment.user.editedBy
+                users[equipment.editedBy].username.lastName + ' ' +
+                users[equipment.editedBy].username.firstName.slice(0, 1) + '.'
+                || equipment.editedBy
               }
             </span>
           }
