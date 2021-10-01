@@ -4,6 +4,37 @@ table, th, td {
   border-collapse: collapse;
 }
 
+table.scroll thead tr:first-child th {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  height: 100px;
+  background-color: #BBBBBB;
+  border: none;
+}
+
+table.scroll thead th.r2 {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 100px;
+  background-color: #BFBFBF;
+  border: none;
+}
+
+table.scroll {
+  display: block;
+  height: 450px;
+  overflow-y: scroll;
+}
+
 td {
   text-align: center;
+}
+
+table.scroll tfoot td {
+  position: -webkit-sticky;
+  position: sticky;
+  bottom: 0;
+  background-color: #BBBBBB;
+  border: none;
 }

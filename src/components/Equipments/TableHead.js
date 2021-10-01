@@ -4,7 +4,7 @@ const TableHead = () => {
   const renderTableCols = () => {
     let cols = [];
     for (let i = 1; i <= 12; i++) {
-      cols.push(<th key={"col" + i}>{i}</th>);
+      cols.push(<th className="r2" key={"col" + i}>{i}</th>);
     }
     return cols;
   };

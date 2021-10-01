@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { endAt, off, onValue, orderByChild, push, query, serverTimestamp, set, startAt } from 'firebase/database';
+import { off, onValue, push, serverTimestamp, set } from 'firebase/database';
 import { compose } from 'recompose';
 
 import {
@@ -25,14 +25,12 @@ const Journal_T12 = () => {
   const [data08, setData08] = useState(''); // next calibration
   const [data09, setData09] = useState(''); // putting in storage
   const [data10, setData10] = useState(''); // removing from storage
-  const [data11, setData11] = useState('');
+  const [, setData11] = useState(''); // time of removing from storage or expiration of calibration
   const [data12, setData12] = useState(''); // notes
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [equipments, setEquipments] = useState([]);
-  const [start, setStart] = useState(0);
   const [users, setUsers] = useState(null);
-  const [length, setLength] = useState(0);
 
   const authUser = useContext(AuthUserContext);
 
@@ -45,7 +43,7 @@ const Journal_T12 = () => {
   const onListenForEquipments = () => {
     setLoading(true);
 
-    onValue(query(firebase.equipments(), orderByChild('data01'), startAt(start), endAt(start + 5)), snapshot => {
+    onValue(firebase.equipments(), snapshot => {
       const equipmentsObject = snapshot.val();
 
       if (equipmentsObject) {
@@ -56,10 +54,8 @@ const Journal_T12 = () => {
         }));
 
         setEquipments(equipmentsList);
-        setLength(equipmentsList.length);
       } else {
         setEquipments(null);
-        setLength(0);
       }
       setLoading(false);
     });
@@ -73,7 +69,7 @@ const Journal_T12 = () => {
       off(firebase.equipments());
       off(firebase.users());
     }
-  }, [start]);
+  }, []);
 
   const onCreateEquipment = (event, authUser) => {
     push(firebase.equipments(), {
@@ -162,14 +158,6 @@ const Journal_T12 = () => {
     });
   };
 
-  const onPrevPage = () => {
-    setStart(start - 5);
-  };
-
-  const onNextPage = () => {
-    setStart(start + 5);
-  };
-
   return (
     <div>
       <h1>Химическая лаборатория "Топливо"</h1>
@@ -185,13 +173,8 @@ const Journal_T12 = () => {
         )}
       </button></h2>
 
-      {!loading && equipments && start > 0 && (
-        <button type="button" onClick={onPrevPage}>
-          {(start - 5) ? (start - 5) : 1} — {start}
-        </button>
-      )}
       <form onSubmit={event => onCreateEquipment(event, authUser)}>
-        <table>
+        <table className="scroll">
           <TableHead />
           <tbody>
           <Equipments
@@ -206,7 +189,9 @@ const Journal_T12 = () => {
             onEditData12={onEditData12}
             users={users}
           />
+          </tbody>
 
+          <tfoot>
           <tr>
             <td>
               <input
@@ -285,14 +270,9 @@ const Journal_T12 = () => {
               />
             </td>
           </tr>
-          </tbody>
+          </tfoot>
         </table>
       </form>
-      {!loading && equipments && ((start === 0 && length === 5) || length === 6) && (
-        <button type="button" onClick={onNextPage}>
-          {start + 5} — {start + 10}
-        </button>
-      )}
     </div>
   );
 };
