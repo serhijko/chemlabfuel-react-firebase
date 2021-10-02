@@ -82,7 +82,7 @@ const Journal_T12 = () => {
       data03,
       data04,
       data05,
-      data06,
+      data06: parseInt(data06, 10),
       data07,
       data08: nextCalibration,
       data09,
@@ -125,8 +125,7 @@ const Journal_T12 = () => {
 
   return (
     <div>
-      <h1>Химическая лаборатория "Топливо"</h1>
-      <h2>Журнал учета оборудования (СИ и ИО)
+      <h3>Журнал учета оборудования (СИ и ИО)
       <button
         type="button"
         onClick={onToggleEditMode}
@@ -136,11 +135,11 @@ const Journal_T12 = () => {
         ) : (
           'Выключить режим правки таблицы'
         )}
-      </button></h2>
+      </button></h3>
 
       <form onSubmit={event => onCreateEquipment(event, authUser)}>
         <table className="scroll">
-          <TableHead />
+          <TableHead showExpirationDays={false} />
           <tbody>
           <Equipments
             authUser={authUser}
@@ -149,6 +148,7 @@ const Journal_T12 = () => {
             loading={loading}
             noEquipmentText={"Нет ИО и СИ ..."}
             onEditData={onEditData}
+            showExpirationDays={false}
             users={users}
           />
           </tbody>

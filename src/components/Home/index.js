@@ -8,7 +8,6 @@ import EquipmentsToCalibrate from '../Equipments/EquipmentsToCalibrate';
 
 const HomePage = () => (
   <div>
-    <h1>Home Page</h1>
     <p>Журналы химической лаборатории "Топливо":</p>
     <Link to={ROUTES.JOURNAL_T12}>Т-12 Журнал учета оборудования СМК-ХЛТ-03-ЖУО-011-2020</Link>
     <EquipmentsToCalibrate />

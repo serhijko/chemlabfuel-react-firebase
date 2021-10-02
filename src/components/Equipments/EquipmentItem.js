@@ -2,6 +2,7 @@ import { Component } from 'react';
 import nextDate from '../../handlers/nextCalibrationCalculation';
 import toRussianDateFormat from '../../handlers/toRussianDateFormat';
 import nextCalibrationTime from '../../handlers/nextCalibrationTime';
+import expirationMessage from '../../handlers/expirationMessage';
 
 class EquipmentItem extends Component {
   constructor(props) {
@@ -67,7 +68,7 @@ class EquipmentItem extends Component {
     this.props.onEditData(
       this.props.equipment,
       {
-        data06: this.state.editData06,
+        data06: parseInt(this.state.editData06),
         data08: nextCalibration,
         data11: nextCalibrationTime(nextCalibration, puttingInStorage, removingFromStorage),
       },
@@ -141,6 +142,7 @@ class EquipmentItem extends Component {
       editMode,
       equipment,
       onRemoveEquipment,
+      showExpirationDays,
       users,
     } = this.props;
 
@@ -157,8 +159,10 @@ class EquipmentItem extends Component {
       editData12,
     } = this.state;
 
+    const daysBeforeExpiration = Math.floor((new Date(equipment.data11) - Date.now()) / 86400000);
+
     return (
-      <tr>
+      <tr className={daysBeforeExpiration > 0 ? undefined : "passed-due"}>
         <td>{equipment.data01}</td>
         <td>{equipment.data02}</td>
         <td>{equipment.data03}</td>
@@ -259,7 +263,10 @@ class EquipmentItem extends Component {
           ))}
         </td>
         <td>
-          {
+          {showExpirationDays
+            ?
+            expirationMessage(daysBeforeExpiration)
+            :
             users[equipment.createdBy].username.lastName + ' ' +
             users[equipment.createdBy].username.firstName.slice(0, 1) + '.'
             || equipment.createdBy

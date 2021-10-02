@@ -9,3 +9,8 @@
   width: 80%;
   pointer-events: none;
 }
+
+.Header-text {
+  width: 100%;
+  pointer-events: none;
+}

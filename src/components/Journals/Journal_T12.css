@@ -31,6 +31,10 @@ td {
   text-align: center;
 }
 
+tr.passed-due td {
+  color: red;
+}
+
 table.scroll tfoot td {
   position: -webkit-sticky;
   position: sticky;

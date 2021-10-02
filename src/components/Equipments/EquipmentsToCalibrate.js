@@ -91,7 +91,7 @@ const EquipmentsToCalibrate = () => {
       </form>
 
       <table>
-        <TableHead />
+        <TableHead showExpirationDays={true} />
         <tbody>
         <Equipments
           authUser={authUser}
@@ -100,6 +100,7 @@ const EquipmentsToCalibrate = () => {
           users={users}
           noEquipmentText={error ? error.toString() : `Нет ИО, требующих метрологической аттестации, \
           и СИ, требующих поверки, калибровки в течение ближайших ${period} дней.`}
+          showExpirationDays={true}
         />
         </tbody>
       </table>

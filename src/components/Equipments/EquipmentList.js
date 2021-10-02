@@ -6,6 +6,7 @@ const EquipmentList = ({
                          onRemoveEquipment,
                          editMode,
                          onEditData,
+                         showExpirationDays,
                          users,
                        }) => (
   <>
@@ -17,6 +18,7 @@ const EquipmentList = ({
         onRemoveEquipment={onRemoveEquipment}
         editMode={editMode}
         onEditData={onEditData}
+        showExpirationDays={showExpirationDays}
         users={users}
       />
     ))}
