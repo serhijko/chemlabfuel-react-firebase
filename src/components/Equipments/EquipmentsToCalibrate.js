@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { endAt, off, onValue, orderByChild, query, serverTimestamp, set } from 'firebase/database';
+import { endAt, off, onValue, orderByChild, query, set } from 'firebase/database';
 
 import { AuthUserContext } from '../Session';
 import * as firebase from '../Firebase';
@@ -9,7 +9,6 @@ import Equipments from './index';
 const EquipmentsToCalibrate = () => {
   const [loading, setLoading] = useState(false);
   const [equipments, setEquipments] = useState([]);
-  const [editMode, setEditMode] = useState(false);
   const [period, setPeriod] = useState(45);
   const [users, setUsers] = useState(null);
   const [error, setError] = useState(null);
@@ -28,16 +27,16 @@ const EquipmentsToCalibrate = () => {
     setLoading(true);
 
     onValue(query(firebase.equipments(), orderByChild('data11'), endAt(deadline.getTime())), snapshot => {
-      const equipmentObject = snapshot.val();
+      const equipmentsObject = snapshot.val();
 
-      if (equipmentObject) {
+      if (equipmentsObject) {
         // convert equipments list from snapshot
-        const equipmentsList = Object.keys(equipmentObject).map(key => ({
-          ...equipmentObject[key],
+        const equipmentsList = Object.keys(equipmentsObject).map(key => ({
+          ...equipmentsObject[key],
           uid: key,
         }));
 
-        setEquipments(equipmentsList);
+        setEquipments(equipmentsList.sort((a, b) => (a.data11 - b.data11)));
       } else {
         setEquipments(null);
       }
@@ -53,6 +52,7 @@ const EquipmentsToCalibrate = () => {
       off(firebase.equipments());
       off(firebase.users());
     }
+    // eslint-disable-next-line
   }, [period]);
 
   const onChangePeriod = event => {
@@ -63,7 +63,7 @@ const EquipmentsToCalibrate = () => {
     (async () => {
       try {
         // Create the period for authUser in Firebase realtime database
-        return await set(firebase.user(authUser.user.uid), {
+        return await set(firebase.user(authUser.uid), {
           period,
         });
       } catch (error) {
@@ -72,27 +72,6 @@ const EquipmentsToCalibrate = () => {
     })();
 
     event.preventDefault();
-  };
-  
-  const onToggleEditMode = () => {
-    setEditMode(!editMode);
-  };
-  
-  const onEditPeriod = (equipment, data06, data08, authUser) => {
-    set(firebase.equipment(equipment.uid), {
-      ...equipment,
-      data06,
-      data08,
-      editedAt: serverTimestamp(),
-      editedBy: authUser.uid,
-    });
-  };
-  
-  const onEditData12 = (equipment, data12) => {
-    set(firebase.equipment(equipment.uid), {
-      ...equipment,
-      data12,
-    });
   };
 
   return (
@@ -116,11 +95,10 @@ const EquipmentsToCalibrate = () => {
         <tbody>
         <Equipments
           authUser={authUser}
-          editMode={editMode}
           equipments={equipments}
           loading={loading}
           users={users}
-          noEquipmentText={`Нет ИО, требующих метрологической аттестации, \
+          noEquipmentText={error ? error.toString() : `Нет ИО, требующих метрологической аттестации, \
           и СИ, требующих поверки, калибровки в течение ближайших ${period} дней.`}
         />
         </tbody>

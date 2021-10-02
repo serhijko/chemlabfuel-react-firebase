@@ -5,11 +5,7 @@ const EquipmentList = ({
                          equipments,
                          onRemoveEquipment,
                          editMode,
-                         onEditData06,
-                         onEditData07,
-                         onEditData09,
-                         onEditData10,
-                         onEditData12,
+                         onEditData,
                          users,
                        }) => (
   <>
@@ -20,11 +16,7 @@ const EquipmentList = ({
         equipment={equipment}
         onRemoveEquipment={onRemoveEquipment}
         editMode={editMode}
-        onEditData06={onEditData06}
-        onEditData07={onEditData07}
-        onEditData09={onEditData09}
-        onEditData10={onEditData10}
-        onEditData12={onEditData12}
+        onEditData={onEditData}
         users={users}
       />
     ))}

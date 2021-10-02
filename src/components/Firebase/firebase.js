@@ -46,6 +46,11 @@ export const onAuthUserListener = (next, fallback) =>
             dbUser.roles = {};
           }
 
+          // default 45 days period
+          if (!dbUser.period) {
+            dbUser.period = 45;
+          }
+
           // merge auth and db user
           authUser = {
             uid: authUser.uid,

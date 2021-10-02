@@ -64,11 +64,13 @@ class EquipmentItem extends Component {
     const nextCalibration = nextDate(this.state.editData06, this.props.equipment.data07);
     const puttingInStorage = this.props.equipment.data09;
     const removingFromStorage = this.props.equipment.data10;
-    this.props.onEditData06(
+    this.props.onEditData(
       this.props.equipment,
-      this.state.editData06,
-      nextCalibration,
-      nextCalibrationTime(nextCalibration, puttingInStorage, removingFromStorage),
+      {
+        data06: this.state.editData06,
+        data08: nextCalibration,
+        data11: nextCalibrationTime(nextCalibration, puttingInStorage, removingFromStorage),
+      },
       authUser,
     );
 
@@ -79,11 +81,13 @@ class EquipmentItem extends Component {
     const nextCalibration = nextDate(this.props.equipment.data06, this.state.editData07);
     const puttingInStorage = this.props.equipment.data09;
     const removingFromStorage = this.props.equipment.data10;
-    this.props.onEditData07(
+    this.props.onEditData(
       this.props.equipment,
-      this.state.editData07,
-      nextCalibration,
-      nextCalibrationTime(nextCalibration, puttingInStorage, removingFromStorage),
+      {
+        data07: this.state.editData07,
+        data08: nextCalibration,
+        data11: nextCalibrationTime(nextCalibration, puttingInStorage, removingFromStorage),
+      },
       authUser,
     );
 
@@ -94,10 +98,12 @@ class EquipmentItem extends Component {
     const nextCalibration = nextDate(this.props.equipment.data06, this.props.equipment.data07);
     const puttingInStorage = this.state.editData09;
     const removingFromStorage = this.props.equipment.data10;
-    this.props.onEditData09(
+    this.props.onEditData(
       this.props.equipment,
-      this.state.editData09,
-      nextCalibrationTime(nextCalibration, puttingInStorage, removingFromStorage),
+      {
+        data09: this.state.editData09,
+        data11: nextCalibrationTime(nextCalibration, puttingInStorage, removingFromStorage),
+      },
       authUser,
     );
 
@@ -108,10 +114,12 @@ class EquipmentItem extends Component {
     const nextCalibration = nextDate(this.props.equipment.data06, this.props.equipment.data07);
     const puttingInStorage = this.props.equipment.data09;
     const removingFromStorage = this.state.editData10;
-    this.props.onEditData10(
+    this.props.onEditData(
       this.props.equipment,
-      this.state.editData10,
-      nextCalibrationTime(nextCalibration, puttingInStorage, removingFromStorage),
+      {
+        data10: this.state.editData10,
+        data11: nextCalibrationTime(nextCalibration, puttingInStorage, removingFromStorage),
+      },
       authUser,
     );
 
@@ -119,7 +127,10 @@ class EquipmentItem extends Component {
   };
 
   onSaveEditData12 = () => {
-    this.props.onEditData12(this.props.equipment, this.state.editData12);
+    this.props.onEditData(
+      this.props.equipment,
+      { data12: this.state.editData12 },
+    );
 
     this.setState({ editMode12: false });
   };

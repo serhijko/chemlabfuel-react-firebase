@@ -23,10 +23,10 @@ const Journal_T12 = () => {
   const [data05, setData05] = useState(''); // release
   const [data06, setData06] = useState(''); // periodicity
   const [data07, setData07] = useState(''); // last calibration
-  const [, setData08] = useState(''); // next calibration
+  // const [data08, setData08] = useState(''); // next calibration
   const [data09, setData09] = useState(''); // putting in storage
   const [data10, setData10] = useState(''); // removing from storage
-  const [, setData11] = useState(''); // time of removing from storage or expiration of calibration
+  // const [data11, setData11] = useState(''); // time of removing from storage or expiration of calibration
   const [data12, setData12] = useState(''); // notes
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -77,7 +77,7 @@ const Journal_T12 = () => {
     push(firebase.equipments(), {
       createdAt: serverTimestamp(),
       createdBy: authUser.uid,
-      data01: data01/1,
+      data01: parseInt(data01, 10),
       data02,
       data03,
       data04,
@@ -98,10 +98,8 @@ const Journal_T12 = () => {
     setData05('');
     setData06('');
     setData07('');
-    setData08('');
     setData09('');
     setData10('');
-    setData11('');
     setData12('');
 
     event.preventDefault();
@@ -111,52 +109,17 @@ const Journal_T12 = () => {
     setEditMode(!editMode);
   }
 
-  const onEditData06 = (equipment, data06, data08, data11, authUser) => {
+  const onEditData = (equipment, data, authUser) => {
+    const editingData = authUser ? (
+      {
+        editedAt: serverTimestamp(),
+        editedBy: authUser.uid,
+      }
+    ) : {};
     set(firebase.equipment(equipment.uid), {
       ...equipment,
-      data06,
-      data08,
-      data11,
-      editedAt: serverTimestamp(),
-      editedBy: authUser.uid,
-    });
-  };
-
-  const onEditData07 = (equipment, data07, data08, data11, authUser) => {
-    set(firebase.equipment(equipment.uid), {
-      ...equipment,
-      data07,
-      data08,
-      data11,
-      editedAt: serverTimestamp(),
-      editedBy: authUser.uid,
-    });
-  };
-
-  const onEditData09 = (equipment, data09, data11, authUser) => {
-    set(firebase.equipment(equipment.uid), {
-      ...equipment,
-      data09,
-      data11,
-      editedAt: serverTimestamp(),
-      editedBy: authUser.uid,
-    });
-  };
-
-  const onEditData10 = (equipment, data10, data11, authUser) => {
-    set(firebase.equipment(equipment.uid), {
-      ...equipment,
-      data10,
-      data11,
-      editedAt: serverTimestamp(),
-      editedBy: authUser.uid,
-    });
-  };
-
-  const onEditData12 = (equipment, data12) => {
-    set(firebase.equipment(equipment.uid), {
-      ...equipment,
-      data12,
+      ...data,
+      ...editingData,
     });
   };
 
@@ -184,13 +147,9 @@ const Journal_T12 = () => {
             editMode={editMode}
             equipments={equipments}
             loading={loading}
-            onEditData06={onEditData06}
-            onEditData07={onEditData07}
-            onEditData09={onEditData09}
-            onEditData10={onEditData10}
-            onEditData12={onEditData12}
-            users={users}
             noEquipmentText={"Нет ИО и СИ ..."}
+            onEditData={onEditData}
+            users={users}
           />
           </tbody>
 

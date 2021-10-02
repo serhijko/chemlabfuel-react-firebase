@@ -9,11 +9,7 @@ const Equipments = ({
   equipments,
   loading,
   noEquipmentText,
-  onEditData06,
-  onEditData07,
-  onEditData09,
-  onEditData10,
-  onEditData12,
+  onEditData,
   users,
                     }) => {
   const onRemoveEquipment = uid => {
@@ -29,11 +25,7 @@ const Equipments = ({
           authUser={authUser}
           equipments={equipments}
           editMode={editMode}
-          onEditData06={onEditData06}
-          onEditData07={onEditData07}
-          onEditData09={onEditData09}
-          onEditData10={onEditData10}
-          onEditData12={onEditData12}
+          onEditData={onEditData}
           onRemoveEquipment={onRemoveEquipment}
           users={users}
         />
